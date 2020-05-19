@@ -1,12 +1,13 @@
 const path = require('path')
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
-  mode: 'development',
+  mode: "development",
   entry: path.resolve(__dirname, "./src/index.js"),
   output: {
     filename: "bundle.js",
-    path: path.resolve(__dirname , "dist"),
+    path: path.resolve(__dirname, "dist"),
     publicPath: "/"
   },
   module: {
@@ -16,23 +17,30 @@ module.exports = {
         exclude: /node_modules/,
         loader: require.resolve("babel-loader")
       },
-      { 
-        test: /\.css$/, 
+      {
+        test: /\.css$/,
         use: [
-           "style-loader",
-           "css-loader"
-          ]
+          "style-loader",
+          MiniCssExtractPlugin.loader,
+          "css-loader",
+          "postcss-loader"
+        ]
       }
     ]
   },
 
   plugins: [
-    new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, 'src','index.html'),
+    new MiniCssExtractPlugin({
+      filename: "App.css",
+      chunkFilename: "App.css"
     }),
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, "src", "index.html")
+    })
   ],
   devServer: {
     contentBase: "./dist",
-    hot: true
+    hot: true,
+    historyApiFallback: true
   }
 };
